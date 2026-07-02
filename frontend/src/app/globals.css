@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS variables mirror the Tailwind tokens for use in raw CSS when needed (§2.1). */
+:root {
+  --color-bg: #f4f3f1;
+  --color-surface: #ffffff;
+  --color-ink: #111111;
+  --color-ink-soft: #4a4a4a;
+  --color-muted: #8a8a8a;
+  --color-line: #e4e2de;
+  --color-dark: #1a1a1a;
+  --color-on-dark: #f4f3f1;
+  --color-accent: #b89b3e;
+  --color-accent-bg: #f2c84b;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-bg text-ink font-sans;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-serif;
+    font-weight: 500;
+  }
+
+  /* Consistent focus ring across interactive elements */
+  :focus-visible {
+    outline: 1.5px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-on-dark);
+  }
+}
+
+@layer components {
+  /* Uppercase letter-spaced label/eyebrow used throughout (nav, form labels, kickers) */
+  .u-label {
+    @apply font-sans text-label uppercase tracking-label;
+  }
+
+  /* Underlined editorial text link (VIEW ALL, EXPLORE COLLECTION, Read more) */
+  .u-link {
+    @apply u-label inline-flex items-center gap-1 border-b border-ink pb-0.5 text-ink transition-opacity duration-300 ease-lux hover:opacity-60;
+  }
+
+  /* Page section padding rhythm */
+  .section {
+    @apply px-6 md:px-10;
+  }
+
+  .container-lux {
+    @apply mx-auto w-full max-w-container;
+  }
+}
+
+/* ── New landing page helpers ── */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  /* Required for icon ligatures to render correctly */
+  font-variant-ligatures: normal;
+  -webkit-font-feature-settings: 'liga' 1;
+  font-feature-settings: 'liga' 1;
+}
+
+.image-zoom:hover img {
+  transform: scale(1.05);
+}
+
+/* ── Price range slider (FilterSidebar) ── */
+.price-range-input {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+  height: 20px;
+  padding: 8px 0;
+}
+.price-range-input::-webkit-slider-runnable-track {
+  background: var(--color-line);
+  height: 2px;
+  border-radius: 0;
+}
+.price-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--color-ink);
+  border-radius: 50%;
+  margin-top: -7px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.price-range-input:hover::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.price-range-input::-moz-range-track {
+  background: var(--color-line);
+  height: 2px;
+  border-radius: 0;
+}
+.price-range-input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--color-ink);
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+}
+.price-range-input:focus {
+  outline: none;
+}
+.price-range-input:focus::-webkit-slider-thumb {
+  outline: 1.5px solid var(--color-ink);
+  outline-offset: 2px;
+}
