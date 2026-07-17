@@ -1,0 +1,16 @@
+export const COMMON_PASSWORDS = [
+  '123456', 'password', '12345678', 'qwerty', '12345', '123456789', '1234',
+  '111111', '1234567', 'dragon', '123123', 'baseball', 'iloveyou', 'monkey',
+  'letmein', 'abc123', '696969', 'shadow', 'master', '666666', 'qwertyuiop',
+  '123321', 'mustang', '1234567890', 'michael', '654321', 'superman', '1qaz2wsx',
+  '7777777', 'fuckyou', '121212', '000000', 'qazwsx', '123qwe', 'killer', 'trustno1',
+  'jordan', 'jennifer', 'zxcvbnm', 'asdfgh', 'hunter', 'buster', 'soccer', 'harley',
+  'batman', 'andrew', 'tigger', 'sunshine', 'iloveyou1', 'charlie', 'donald', 'password1',
+  'qwerty123', 'hello', 'ashley', 'bailey', 'passw0rd', 'shadow1', 'daniel', 'computer',
+  'jessica', 'letmein1', 'matthew', 'football', 'internet', 'service', 'canada', 'hello1',
+  'ranger', 'nintendo', 'ginger', 'cheese', 'amanda', 'joshua', 'maggie', 'biteme',
+  'enter', 'manchester', 'test', 'admin', 'login', 'god', 'love', 'money', 'fuck',
+  'freedom', 'whatever', 'secret', 'myspace', 'password2', 'abcd1234', 'welcome',
+  'princess', 'baseball1', 'pass', 'pass123', 'qwerty1', 'access', 'root',
+  '123', '1', '12', '1234abcd', 'pass1', 'flower', 'summer', 'chocolate', 'cheese1',
+];
