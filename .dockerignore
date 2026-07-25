@@ -1,0 +1,43 @@
+# Build context for backend/Dockerfile (context = repo root).
+#
+# NOTE: `clothes/` and `new images/` are deliberately NOT ignored — the API
+# serves and seeds from them. `backend/uploads/` IS ignored: it is regenerated
+# by `npm run seed` and mounted as a named volume at runtime.
+
+node_modules
+**/node_modules
+
+# Regenerable / runtime state
+backend/uploads
+frontend/.next
+frontend/out
+frontend/build
+dist
+coverage
+
+# Secrets — never bake these into an image layer
+.env
+.env.*
+!.env.example
+!.env.docker.example
+**/.env
+**/.env.local
+**/.env.*.local
+!**/.env.example
+
+# The frontend has its own build context
+frontend
+
+# VCS / tooling / docs
+.git
+.gitignore
+.github
+.vscode
+.idea
+*.log
+npm-debug.log*
+README.md
+docker-compose*.yml
+Dockerfile*
+**/Dockerfile
+.dockerignore
