@@ -28,7 +28,7 @@ jobs:
       matrix:
         app: [backend, frontend]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v4
         with:
@@ -57,7 +57,7 @@ jobs:
     container:
       image: semgrep/semgrep
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Scan
         run: |
@@ -83,7 +83,7 @@ jobs:
     name: Secret scan (TruffleHog)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Full history: a secret that was committed and later removed is still
           # a live secret. A shallow clone would miss it.
@@ -101,7 +101,7 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Scan repository
         uses: aquasecurity/trivy-action@v0.28.0
@@ -130,7 +130,7 @@ jobs:
       matrix:
         dockerfile: [backend/Dockerfile, frontend/Dockerfile]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: hadolint/hadolint-action@v3.1.0
         with:
@@ -154,7 +154,7 @@ jobs:
             context: ./frontend
             dockerfile: frontend/Dockerfile
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: docker/setup-buildx-action@v3
 
