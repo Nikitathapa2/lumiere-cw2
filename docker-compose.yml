@@ -1,0 +1,147 @@
+# LUMIÈRE — full stack (MongoDB + Express API + Next.js storefront).
+#
+#   cp .env.docker.example .env            # then fill in the secrets
+#   docker compose up --build              # http://localhost:3000
+#   docker compose --profile seed run --rm seed   # load the catalog (once)
+#
+# Every service pins an image digest-free but explicit tag and declares a
+# healthcheck, so `depends_on: condition: service_healthy` gives a deterministic
+# boot order instead of a race.
+
+name: lumiere
+
+services:
+  mongo:
+    image: mongo:7.0
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-lumiere}
+    volumes:
+      - mongo-data:/data/db
+    # Not published by default — only the API needs it. Uncomment to inspect
+    # the database from the host with Compass/mongosh.
+    # ports:
+    #   - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - lumiere
+
+  backend:
+    build:
+      # Repo root: the API also serves clothes/ and "new images/".
+      context: .
+      dockerfile: backend/Dockerfile
+    image: lumiere-backend:local
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/${MONGO_DB:-lumiere}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:3000}
+      # Product image URLs are absolute and baked into documents at seed time.
+      # They point at the storefront origin, which proxies /uploads and /images
+      # back to this service (see frontend/next.config.js rewrites) — that keeps
+      # them reachable by both the browser and the Next image optimizer.
+      API_PUBLIC_URL: ${CLIENT_URL:-http://localhost:3000}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15d}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      CSRF_SECRET: ${CSRF_SECRET:?set CSRF_SECRET in .env}
+      ORDER_ACCESS_SECRET: ${ORDER_ACCESS_SECRET:-}
+      MFA_ENCRYPTION_KEY: ${MFA_ENCRYPTION_KEY:-}
+      MASTER_KEY: ${MASTER_KEY:-}
+      KEY_VERSION: ${KEY_VERSION:-1}
+      OAUTH_STATE_SECRET: ${OAUTH_STATE_SECRET:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL:-http://localhost:5000/api/auth/oauth/google/callback}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      ALLOW_MOCK_CHECKOUT: ${ALLOW_MOCK_CHECKOUT:-false}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      EMAIL_FROM: ${EMAIL_FROM:-noreply@lumiere.store}
+      ALERT_EMAIL: ${ALERT_EMAIL:-}
+      ALERT_WEBHOOK_URL: ${ALERT_WEBHOOK_URL:-}
+    ports:
+      - "${BACKEND_PORT:-5000}:5000"
+    volumes:
+      # Admin-uploaded and seeded product imagery must survive a rebuild.
+      - uploads:/app/backend/uploads
+    networks:
+      - lumiere
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # Inlined into the client bundle at build time — this is the URL the
+        # *browser* uses, so it must be the host-published port, not `backend`.
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5000/api}
+        NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY:-}
+        # Baked into the /uploads + /images rewrites at build time (Next resolves
+        # rewrites() during the build, not per request), so it must be a build
+        # arg — a runtime env var arrives too late to change the proxy target.
+        BACKEND_INTERNAL_URL: http://backend:5000
+    image: lumiere-frontend:local
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      # Server-side only: SSR fetches and the /uploads + /images rewrites.
+      INTERNAL_API_URL: http://backend:5000/api
+      BACKEND_INTERNAL_URL: http://backend:5000
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    networks:
+      - lumiere
+
+  # One-shot catalog seed. Reuses the backend image, copies clothes/ and
+  # "new images/" into the uploads volume, then exits.
+  #   docker compose --profile seed run --rm seed
+  seed:
+    profiles: ["seed"]
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: lumiere-backend:local
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      MONGO_URI: mongodb://mongo:27017/${MONGO_DB:-lumiere}
+      API_PUBLIC_URL: ${CLIENT_URL:-http://localhost:3000}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      CSRF_SECRET: ${CSRF_SECRET:?set CSRF_SECRET in .env}
+      MASTER_KEY: ${MASTER_KEY:-}
+      KEY_VERSION: ${KEY_VERSION:-1}
+    volumes:
+      - uploads:/app/backend/uploads
+    command: ["npm", "run", "seed"]
+    restart: "no"
+    networks:
+      - lumiere
+
+volumes:
+  mongo-data:
+  uploads:
+
+networks:
+  lumiere:
+    driver: bridge

@@ -1,0 +1,20 @@
+# Build context for frontend/Dockerfile (context = ./frontend).
+
+node_modules
+.next
+out
+build
+coverage
+
+# Secrets — NEXT_PUBLIC_* values are injected as build args instead
+.env
+.env.local
+.env.*.local
+!.env.example
+
+.git
+.gitignore
+.dockerignore
+Dockerfile
+*.log
+npm-debug.log*
