@@ -174,12 +174,12 @@ export default async function SalePage({ searchParams }) {
         </section>
 
         <section className="bg-dark py-20 text-center">
-          <p className="u-label text-accent-bg mb-4 tracking-widest">DON'T MISS OUT</p>
+          <p className="u-label text-accent-bg mb-4 tracking-widest">DON&apos;T MISS OUT</p>
           <h2 className="font-serif text-4xl text-on-dark mb-5">
             Sale Ends Soon
           </h2>
           <p className="text-on-dark/50 text-sm max-w-sm mx-auto leading-relaxed mb-10">
-            These reductions are strictly time-limited. Once a size sells out, it's gone —
+            These reductions are strictly time-limited. Once a size sells out, it&apos;s gone —
             no restocks on sale items.
           </p>
           <a
