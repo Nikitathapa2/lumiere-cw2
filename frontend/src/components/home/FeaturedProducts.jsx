@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import ProductImage from '@/components/ui/ProductImage';
 
 const DEFAULT_PRODUCTS = [
@@ -56,12 +57,12 @@ export default function FeaturedProducts({ products = DEFAULT_PRODUCTS }) {
             </span>
             <h2 className="font-headline-lg text-headline-lg">Featured Products</h2>
           </div>
-          <a
+          <Link
             href="/shop"
             className="font-label-lg text-label-lg text-primary border-b border-primary pb-1"
           >
             View All Products
-          </a>
+          </Link>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-gutter gap-y-12">

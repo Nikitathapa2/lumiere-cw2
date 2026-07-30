@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 const SHOPPING_LINKS = [
   { label: 'New Arrivals', href: '/new-arrivals' },
   { label: "Men's Collection", href: '/men' },
@@ -46,12 +48,12 @@ export default function Footer() {
     <footer className="bg-surface-container border-t border-outline-variant/50">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-[1440px] mx-auto px-margin-desktop py-section-desktop">
         <div className="space-y-6">
-          <a
+          <Link
             href="/"
             className="font-headline-md text-headline-md text-primary tracking-tighter"
           >
             LUMIÈRE
-          </a>
+          </Link>
           <p className="text-on-surface-variant font-body-md max-w-xs">
             Curating high-end fashion that bridges the gap between heritage
             craftsmanship and contemporary aesthetics.
